@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { SpeedTestRecord } from '@/types'
 import { fetchSpeedHistory } from '@/services/api'
+import Spinner from '@/components/ui/Spinner'
 import { Download } from 'lucide-react'
 import { API_URL } from '@/services/api'
 
@@ -53,7 +54,7 @@ export default function HistoryPage() {
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={5} className="p-3 text-center text-slate-500 font-body">Loading...</td></tr>
+              <tr><td colSpan={5} className="p-3 text-center text-slate-400 font-body"><Spinner className="w-5 h-5 mx-auto" /></td></tr>
             ) : records.length === 0 ? (
               <tr><td colSpan={5} className="p-3 text-center text-slate-500 font-body">No speed tests yet. Run one from the Speed Test page!</td></tr>
             ) : (

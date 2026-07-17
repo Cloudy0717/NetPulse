@@ -3,11 +3,29 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --color-base: #F5F3F0;
+    --color-base-surface: #FFFFFF;
+    --color-base-border: #E5E2DC;
+    --color-accent: #D97706;
+    --color-accent-secondary: #7C3AED;
+    --color-text-primary: #1F1B2E;
+  }
+
+  .dark {
+    --color-base: #0F0E11;
+    --color-base-surface: #1A181F;
+    --color-base-border: #2C2936;
+    --color-accent: #F59E0B;
+    --color-accent-secondary: #A78BFA;
+    --color-text-primary: #E4E0EC;
+  }
+
   html {
     font-family: 'IBM Plex Sans', sans-serif;
   }
 
   body {
-    @apply antialiased;
+    @apply antialiased bg-base text-text-primary;
   }
 }

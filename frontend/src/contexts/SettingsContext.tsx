@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { Settings } from "@/types";
+import { API_URL } from "@/services/api";
 
 interface SettingsContextType {
   settings: Settings;
@@ -30,7 +31,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
 
   const fetchSettings = useCallback(async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/settings`);
+      const res = await fetch(`${API_URL}/api/settings`);
       const data = await res.json();
       setSettings(data);
     } catch {
@@ -39,7 +40,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const updateSettings = useCallback(async (updates: Partial<Settings>) => {
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/settings`, {
+    const res = await fetch(`${API_URL}/api/settings`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updates),

@@ -9,16 +9,16 @@ export default {
     extend: {
       colors: {
         base: {
-          DEFAULT: '#0F0E11',
-          surface: '#1A181F',
-          border: '#2C2936',
+          DEFAULT: 'var(--color-base)',
+          surface: 'var(--color-base-surface)',
+          border: 'var(--color-base-border)',
         },
         accent: {
-          DEFAULT: '#F59E0B',
-          secondary: '#A78BFA',
+          DEFAULT: 'var(--color-accent)',
+          secondary: 'var(--color-accent-secondary)',
         },
         text: {
-          primary: '#E4E0EC',
+          primary: 'var(--color-text-primary)',
         },
       },
       fontFamily: {

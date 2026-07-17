@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Wifi, Globe, Fingerprint, Router, MapPin, Network, Monitor, Power } from 'lucide-react'
 import { API_URL } from '@/services/api'
+import Spinner from '@/components/ui/Spinner'
 
 interface NetworkData {
   ipv4: string
@@ -31,7 +32,11 @@ export default function NetworkPage() {
     fetchData()
   }, [API_URL])
 
-  if (loading) return <div className="p-4 text-slate-400 font-body">Loading...</div>
+  if (loading) return (
+    <div className="flex items-center justify-center py-16">
+      <Spinner className="w-8 h-8" />
+    </div>
+  )
 
   const fields = [
     { icon: Wifi, label: 'IPv4', value: data?.ipv4 },

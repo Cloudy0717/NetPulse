@@ -24,6 +24,7 @@ async def ws_live(websocket: WebSocket, host: str = Query(default=None)):
     alert_cooldown = {}
 
     try:
+        first = True
         while True:
             now_ts = time.time()
             interval = now_ts - prev_ts
@@ -35,16 +36,23 @@ async def ws_live(websocket: WebSocket, host: str = Query(default=None)):
             }
 
             curr_traffic = psutil.net_io_counters()
-            sent_diff = curr_traffic.bytes_sent - prev_traffic.bytes_sent
-            recv_diff = curr_traffic.bytes_recv - prev_traffic.bytes_recv
+            if first:
+                first = False
+                prev_traffic = curr_traffic
+                prev_ts = now_ts
+                sent_diff = 0
+                recv_diff = 0
+            else:
+                sent_diff = curr_traffic.bytes_sent - prev_traffic.bytes_sent
+                recv_diff = curr_traffic.bytes_recv - prev_traffic.bytes_recv
+                prev_traffic = curr_traffic
+                prev_ts = now_ts
             traffic_data = {
                 "upload_mbps": round((sent_diff * 8) / 1_000_000 / interval, 2) if interval > 0 else 0,
                 "download_mbps": round((recv_diff * 8) / 1_000_000 / interval, 2) if interval > 0 else 0,
                 "packets_sent": curr_traffic.packets_sent,
                 "packets_recv": curr_traffic.packets_recv,
             }
-            prev_traffic = curr_traffic
-            prev_ts = now_ts
 
             ping_data = ping_host(ping_target)
 
