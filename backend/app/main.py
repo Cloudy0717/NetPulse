@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .config import settings
-from .routers import system, network, ping, websocket, speedtest, traceroute, settings as settings_router, history
+from .routers import system, network, ping, websocket, speedtest, traceroute, settings as settings_router, history, portscan
 from .models.database import init_db
 import logging
 
@@ -34,6 +34,7 @@ app.include_router(speedtest.router)
 app.include_router(history.router)
 app.include_router(traceroute.router)
 app.include_router(settings_router.router)
+app.include_router(portscan.router)
 
 
 @app.get("/api/health")
