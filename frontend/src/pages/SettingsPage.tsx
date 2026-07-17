@@ -36,27 +36,20 @@ export default function SettingsPage() {
 
   return (
     <div className="max-w-2xl space-y-6">
-      <h1 className="text-2xl font-bold">Settings</h1>
+      <h1 className="font-display text-2xl text-text-primary">Settings</h1>
 
-      {/* Refresh Rate */}
-      <div className="bg-slate-50 dark:bg-slate-900/50 p-5 rounded-xl border border-slate-200 dark:border-slate-800">
-        <label className="block text-slate-500 dark:text-slate-400 font-medium mb-2">
-          Refresh Rate
-        </label>
-        <p className="text-sm text-slate-500 mb-3">
-          How often to fetch real-time data
-        </p>
+      <div className="bg-base-surface p-5 rounded-xl border border-base-border">
+        <label className="block text-slate-400 font-medium mb-2 font-body">Refresh Rate</label>
+        <p className="text-sm text-slate-500 mb-3 font-body">How often to fetch real-time data</p>
         <div className="flex gap-2">
           {[1, 2, 5].map((rate) => (
             <button
               key={rate}
-              onClick={() =>
-                handleChange({ ...localSettings, refresh_rate: rate })
-              }
-              className={`px-4 py-2 rounded-lg transition-colors ${
+              onClick={() => handleChange({ ...localSettings, refresh_rate: rate })}
+              className={`px-4 py-2 rounded-lg transition-colors font-body ${
                 localSettings.refresh_rate === rate
-                  ? "bg-blue-500 text-white"
-                  : "bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-300 dark:hover:bg-slate-700"
+                  ? "bg-accent text-black"
+                  : "bg-base-border text-slate-400 hover:bg-base-border/80"
               }`}
             >
               {rate}s
@@ -65,21 +58,18 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      {/* Theme */}
-      <div className="bg-slate-50 dark:bg-slate-900/50 p-5 rounded-xl border border-slate-200 dark:border-slate-800">
-        <label className="block text-slate-500 dark:text-slate-400 font-medium mb-2">Theme</label>
-        <p className="text-sm text-slate-500 mb-3">
-          Choose your preferred theme
-        </p>
+      <div className="bg-base-surface p-5 rounded-xl border border-base-border">
+        <label className="block text-slate-400 font-medium mb-2 font-body">Theme</label>
+        <p className="text-sm text-slate-500 mb-3 font-body">Choose your preferred theme</p>
         <div className="flex gap-2">
           {(["dark", "light"] as const).map((theme) => (
             <button
               key={theme}
               onClick={() => handleChange({ ...localSettings, theme })}
-              className={`px-4 py-2 rounded-lg capitalize transition-colors ${
+              className={`px-4 py-2 rounded-lg capitalize transition-colors font-body ${
                 localSettings.theme === theme
-                  ? "bg-blue-500 text-white"
-                  : "bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-300 dark:hover:bg-slate-700"
+                  ? "bg-accent text-black"
+                  : "bg-base-border text-slate-400 hover:bg-base-border/80"
               }`}
             >
               {theme}
@@ -88,23 +78,18 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      {/* Ping Target */}
-      <div className="bg-slate-50 dark:bg-slate-900/50 p-5 rounded-xl border border-slate-200 dark:border-slate-800">
-        <label className="block text-slate-500 dark:text-slate-400 font-medium mb-2">
-          Default Ping Target
-        </label>
-        <p className="text-sm text-slate-500 mb-3">Host to ping by default</p>
+      <div className="bg-base-surface p-5 rounded-xl border border-base-border">
+        <label className="block text-slate-400 font-medium mb-2 font-body">Default Ping Target</label>
+        <p className="text-sm text-slate-500 mb-3 font-body">Host to ping by default</p>
         <div className="flex gap-2">
           {["google.com", "cloudflare.com", "1.1.1.1"].map((host) => (
             <button
               key={host}
-              onClick={() =>
-                handleChange({ ...localSettings, ping_target: host })
-              }
-              className={`px-4 py-2 rounded-lg text-sm transition-colors ${
+              onClick={() => handleChange({ ...localSettings, ping_target: host })}
+              className={`px-4 py-2 rounded-lg text-sm transition-colors font-body ${
                 localSettings.ping_target === host
-                  ? "bg-blue-500 text-white"
-                  : "bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-300 dark:hover:bg-slate-700"
+                  ? "bg-accent text-black"
+                  : "bg-base-border text-slate-400 hover:bg-base-border/80"
               }`}
             >
               {host}
@@ -113,14 +98,9 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      {/* Notifications */}
-      <div className="bg-slate-50 dark:bg-slate-900/50 p-5 rounded-xl border border-slate-200 dark:border-slate-800">
-        <label className="block text-slate-500 dark:text-slate-400 font-medium mb-2">
-          Notifications
-        </label>
-        <p className="text-sm text-slate-500 mb-3">
-          Enable or disable alert notifications
-        </p>
+      <div className="bg-base-surface p-5 rounded-xl border border-base-border">
+        <label className="block text-slate-400 font-medium mb-2 font-body">Notifications</label>
+        <p className="text-sm text-slate-500 mb-3 font-body">Enable or disable alert notifications</p>
         <button
           onClick={() =>
             handleChange({
@@ -129,35 +109,32 @@ export default function SettingsPage() {
             })
           }
           className={`relative w-12 h-6 rounded-full transition-colors ${
-            localSettings.notifications_enabled ? "bg-blue-500" : "bg-slate-300 dark:bg-slate-700"
+            localSettings.notifications_enabled ? "bg-accent" : "bg-base-border"
           }`}
         >
           <div
-            className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${
-              localSettings.notifications_enabled
-                ? "translate-x-7"
-                : "translate-x-1"
+            className={`absolute top-1 w-4 h-4 rounded-full bg-black transition-transform ${
+              localSettings.notifications_enabled ? "translate-x-7" : "translate-x-1"
             }`}
           />
         </button>
-        <span className="ml-3 text-sm text-slate-500 dark:text-slate-400">
+        <span className="ml-3 text-sm text-slate-400 font-body">
           {localSettings.notifications_enabled ? "Enabled" : "Disabled"}
         </span>
       </div>
 
-      {/* Action Buttons */}
       <div className="flex gap-3">
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center gap-2 px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors disabled:opacity-50"
+          className="flex items-center gap-2 px-6 py-2 bg-accent hover:bg-accent/90 text-black rounded-lg transition-colors disabled:opacity-50 font-body"
         >
           <Save className="w-4 h-4" />
           {saving ? "Saving..." : saved ? "Saved!" : "Save Settings"}
         </button>
         <button
           onClick={handleReset}
-          className="flex items-center gap-2 px-6 py-2 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg transition-colors"
+          className="flex items-center gap-2 px-6 py-2 bg-base-border hover:bg-base-border/80 text-slate-300 rounded-lg transition-colors font-body"
         >
           <RotateCcw className="w-4 h-4" />
           Reset to Defaults

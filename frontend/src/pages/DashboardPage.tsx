@@ -19,37 +19,19 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Real-time Dashboard</h1>
+      <h1 className="font-display text-2xl text-text-primary">Real-time Dashboard</h1>
 
-      {/* Status Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <StatusCard
-          icon={Cpu}
-          title="CPU Usage"
-          value={cpuPercent}
-          color="text-green-400"
-        />
-        <StatusCard
-          icon={MemoryStick}
-          title="RAM Usage"
-          value={ramPercent}
-          color="text-purple-400"
-        />
-        <StatusCard
-          icon={HardDrive}
-          title="Disk Usage"
-          value={diskPercent}
-          color="text-cyan-400"
-        />
+        <StatusCard icon={Cpu} title="CPU Usage" value={cpuPercent} color="text-green-400" />
+        <StatusCard icon={MemoryStick} title="RAM Usage" value={ramPercent} color="text-purple-400" />
+        <StatusCard icon={HardDrive} title="Disk Usage" value={diskPercent} color="text-cyan-400" />
       </div>
 
-      {/* Network & Ping Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <TrafficCard traffic={data?.data?.traffic ?? null} />
         <PingCard ping={data?.data?.ping ?? null} />
       </div>
 
-      {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <CpuChart value={cpuPercent} />
         <TrafficChart upload={upload} download={download} />

@@ -14,24 +14,24 @@ const navItems = [
 
 export default function Sidebar() {
   return (
-    <aside className="w-64 bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 p-4">
+    <aside className="w-64 bg-base-surface border-r border-base-border p-4 flex flex-col">
       <div className="flex items-center gap-2 mb-8">
-        <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
-          <Wifi className="w-5 h-5 text-white" />
+        <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
+          <Wifi className="w-5 h-5 text-black" />
         </div>
-        <span className="text-xl font-bold">NetPulse</span>
+        <span className="font-display text-xl text-text-primary">NetPulse</span>
       </div>
 
-      <nav className="space-y-2">
+      <nav className="space-y-2 flex-1">
         {navItems.map(({ icon: Icon, label, path }) => (
           <NavLink
             key={path}
             to={path}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2 rounded-lg transition-colors ${
+              `flex items-center gap-3 px-4 py-2 rounded-lg transition-colors font-body text-sm ${
                 isActive
-                  ? 'bg-blue-500/20 text-blue-400'
-                  : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  ? 'bg-accent/15 text-accent'
+                  : 'text-slate-400 hover:bg-base-border hover:text-text-primary'
               }`
             }
           >

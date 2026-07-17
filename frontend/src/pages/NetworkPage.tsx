@@ -31,7 +31,7 @@ export default function NetworkPage() {
     fetchData()
   }, [API_URL])
 
-  if (loading) return <div className="p-4 text-slate-400">Loading...</div>
+  if (loading) return <div className="p-4 text-slate-400 font-body">Loading...</div>
 
   const fields = [
     { icon: Wifi, label: 'IPv4', value: data?.ipv4 },
@@ -46,16 +46,16 @@ export default function NetworkPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Network Information</h1>
+      <h1 className="font-display text-2xl text-text-primary">Network Information</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {fields.map(({ icon: Icon, label, value }) => (
-          <div key={label} className="bg-slate-900/50 rounded-xl p-4 border border-slate-800 flex items-center gap-4">
-            <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
-              <Icon className="w-5 h-5 text-blue-400" />
+          <div key={label} className="bg-base-surface rounded-xl p-4 border border-base-border flex items-center gap-4">
+            <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center">
+              <Icon className="w-5 h-5 text-accent" />
             </div>
             <div>
-              <div className="text-sm text-slate-400">{label}</div>
-              <div className="font-medium">{value || 'Unknown'}</div>
+              <div className="text-sm text-slate-400 font-body">{label}</div>
+              <div className="font-medium font-mono text-slate-300">{value || 'Unknown'}</div>
             </div>
           </div>
         ))}

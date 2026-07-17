@@ -24,7 +24,7 @@ export default function Layout() {
   }, [data, addToast]);
 
   return (
-    <div className="flex h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100">
+    <div className="flex h-screen bg-base text-text-primary font-body">
       <Sidebar />
       <div className="flex-1 flex flex-col">
         <Header />
