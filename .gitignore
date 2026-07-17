@@ -28,6 +28,9 @@ data/settings.json
 **/*.db
 **/*.db-journal
 *.log
+backend/uvicorn_err.txt
+backend/uvicorn_out.txt
+/我的笔记.txt
 
 # Test
 coverage/
