@@ -1,13 +1,23 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .config import settings
 from .routers import system, network, ping, websocket, speedtest, traceroute, settings as settings_router
+from .models.database import init_db
 import logging
 
 logging.basicConfig(level=settings.log_level)
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="NetPulse API")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await init_db()
+    logger.info("Database initialized")
+    yield
+
+
+app = FastAPI(title="NetPulse API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
