@@ -65,12 +65,12 @@ export default function WaveScan({ status, speed = 0, phase = '', onStart, onRes
     `${x === 0 ? 'M' : 'L'}${x},${(y)}`
   ).join('')
 
-  const showValue = status === 'testing' || (status === 'complete' && speed > 0)
+  const showValue = (status === 'testing' && speed > 0) || (status === 'complete' && speed > 0)
 
   return (
     <div
       onClick={status === 'idle' ? onStart : undefined}
-      className="bg-base-surface rounded-xl border border-base-border cursor-pointer select-none group relative overflow-hidden aspect-video"
+      className="bg-base-surface rounded-xl border border-base-border cursor-pointer select-none group relative overflow-hidden aspect-[3/1]"
     >
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-full" preserveAspectRatio="xMidYMid meet">
         <path d={pathD} fill="none" stroke="#F59E0B" strokeWidth="0.8" vectorEffect="non-scaling-stroke" opacity={status === 'idle' ? 0.4 : 0.8} />
@@ -85,7 +85,7 @@ export default function WaveScan({ status, speed = 0, phase = '', onStart, onRes
         {status === 'idle' && (
           <>
             <circle cx={W / 2} cy={CY} r="2" fill="#F59E0B" opacity="0.8" />
-            <text x={W / 2} y={CY + 12} textAnchor="middle" fill="#94a3b8" fontSize="7" fontFamily="IBM Plex Sans">
+            <text x={W / 2} y={CY + 10} textAnchor="middle" fill="#94a3b8" fontSize="5" fontFamily="IBM Plex Sans">
               Click to start
             </text>
           </>
@@ -94,10 +94,19 @@ export default function WaveScan({ status, speed = 0, phase = '', onStart, onRes
 
       {showValue && (
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-          <span className="text-4xl font-bold font-mono text-accent">
+          <span className="text-3xl font-bold font-mono text-accent">
             {speed.toFixed(1)}
           </span>
-          <span className="text-sm text-slate-400 font-body">Mbps</span>
+          <span className="text-xs text-slate-400 font-body">Mbps</span>
+          {phase && (
+            <span className="text-xs text-slate-500 font-body">{phase}</span>
+          )}
+        </div>
+      )}
+
+      {status === 'testing' && speed === 0 && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+          <span className="text-lg font-mono text-accent animate-pulse">Testing</span>
           {phase && (
             <span className="text-xs text-slate-500 font-body mt-1">{phase}</span>
           )}

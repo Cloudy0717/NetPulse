@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowUp, ArrowDown, Clock, Server } from 'lucide-react'
 import WaveScan from '@/components/charts/WaveScan'
@@ -10,13 +10,6 @@ interface SpeedTestResult {
   server: string
 }
 
-const PHASES = [
-  { text: 'Finding optimal server...', duration: 3000 },
-  { text: 'Testing download speed...', duration: 10000 },
-  { text: 'Testing upload speed...', duration: 8000 },
-  { text: 'Measuring latency...', duration: 3000 },
-]
-
 export default function SpeedtestPage() {
   const [status, setStatus] = useState<'idle' | 'connecting' | 'testing' | 'complete'>('idle')
   const [speed, setSpeed] = useState(0)
@@ -25,60 +18,57 @@ export default function SpeedtestPage() {
   const [error, setError] = useState('')
   const navigate = useNavigate()
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
-  const speedRef = useRef(0)
+  const pollRef = useRef<ReturnType<typeof setInterval>>()
 
   const runTest = useCallback(async () => {
     setStatus('connecting')
     setResult(null)
     setError('')
     setSpeed(0)
-    speedRef.current = 0
 
     try {
       const startRes = await fetch(`${API_URL}/api/speedtest`, { method: 'POST' })
       const { job_id } = await startRes.json()
 
       setStatus('testing')
-      setPhase(PHASES[0].text)
 
-      const phaseTimer = setInterval(() => {
-        setPhase(prev => {
-          const idx = PHASES.findIndex(p => p.text === prev)
-          const next = Math.min(idx + 1, PHASES.length - 1)
-          return PHASES[next].text
-        })
-      }, 6000)
+      pollRef.current = setInterval(async () => {
+        try {
+          const statusRes = await fetch(`${API_URL}/api/speedtest/${job_id}`)
+          const data = await statusRes.json()
 
-      const speedSim = setInterval(() => {
-        speedRef.current = Math.min(speedRef.current + Math.random() * 8 + 2, 150)
-        setSpeed(Math.round(speedRef.current * 10) / 10)
-      }, 1500)
+          if (data.phase) setPhase(data.phase)
+          if (data.phase?.includes('upload') && data.upload_speed !== undefined) {
+            setSpeed(data.upload_speed)
+          } else if (data.download_speed !== undefined) {
+            setSpeed(data.download_speed)
+          }
 
-      let done = false
-      while (!done) {
-        await new Promise((r) => setTimeout(r, 2000))
-        const statusRes = await fetch(`${API_URL}/api/speedtest/${job_id}`)
-        const data = await statusRes.json()
-        if (data.status === 'done') {
-          clearInterval(phaseTimer)
-          clearInterval(speedSim)
-          setResult(data.result)
-          setSpeed(data.result.download_mbps)
+          if (data.status === 'done') {
+            clearInterval(pollRef.current)
+            setResult(data.result)
+            setSpeed(data.result.download_mbps)
+            setStatus('complete')
+          } else if (data.status === 'error') {
+            clearInterval(pollRef.current)
+            setError(data.error || 'Test failed')
+            setStatus('complete')
+          }
+        } catch {
+          clearInterval(pollRef.current)
+          setError('Failed to connect to server')
           setStatus('complete')
-          done = true
-        } else if (data.status === 'error') {
-          clearInterval(phaseTimer)
-          clearInterval(speedSim)
-          setError(data.error || 'Test failed')
-          setStatus('complete')
-          done = true
         }
-      }
+      }, 600)
     } catch {
       setError('Failed to connect to server')
       setStatus('complete')
     }
   }, [API_URL])
+
+  useEffect(() => {
+    return () => { if (pollRef.current) clearInterval(pollRef.current) }
+  }, [])
 
   const handleRestart = () => {
     setStatus('idle')
@@ -87,14 +77,19 @@ export default function SpeedtestPage() {
     setSpeed(0)
   }
 
+  const scanStatus = status === 'connecting' ? 'testing'
+    : status === 'complete' && error ? 'idle'
+    : status === 'complete' && result ? 'complete'
+    : status
+
   return (
     <div className="space-y-6">
       <h1 className="font-display text-2xl text-text-primary">Speed Test</h1>
 
       <WaveScan
-        status={status === 'connecting' ? 'testing' : status === 'complete' && error ? 'idle' : status === 'complete' && result ? 'complete' : status === 'testing' ? 'testing' : status}
-        speed={status === 'idle' || status === 'connecting' ? 0 : speed}
-        phase={status === 'connecting' ? 'Initializing...' : phase}
+        status={scanStatus}
+        speed={speed}
+        phase={phase}
         onStart={runTest}
         onRestart={result && !error ? handleRestart : undefined}
       />

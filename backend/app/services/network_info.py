@@ -7,6 +7,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+_VIRTUAL_PREFIXES = ("vmnet", "vether", "vbox", "docker", "br-", "veth", "lo")
+
+
+def _is_physical(name: str) -> bool:
+    return not name.lower().startswith(_VIRTUAL_PREFIXES)
+
 
 def get_network_info() -> dict:
     logger.debug("Fetching network info")
@@ -18,17 +24,19 @@ def get_network_info() -> dict:
     ipv4 = "Unknown"
     mac_address = "Unknown"
 
-    for name, stat in stats.items():
-        if stat.isup and name != "lo":
-            interface_name = name
-            interface_status = "Up"
-            if name in addrs:
-                for addr in addrs[name]:
-                    if addr.family == socket.AF_INET:
-                        ipv4 = addr.address
-                    elif addr.family == psutil.AF_LINK:
-                        mac_address = addr.address
-            break
+    candidates = [name for name, s in stats.items() if s.isup and name != "lo"]
+    physical = [n for n in candidates if _is_physical(n)]
+    chosen = physical[0] if physical else (candidates[0] if candidates else None)
+
+    if chosen and chosen in stats:
+        interface_name = chosen
+        interface_status = "Up" if stats[chosen].isup else "Down"
+        if chosen in addrs:
+            for addr in addrs[chosen]:
+                if addr.family == socket.AF_INET:
+                    ipv4 = addr.address
+                elif addr.family == psutil.AF_LINK:
+                    mac_address = addr.address
 
     try:
         result = subprocess.run(["ipconfig"], capture_output=True, text=True)

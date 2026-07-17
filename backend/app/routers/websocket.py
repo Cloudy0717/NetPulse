@@ -20,10 +20,14 @@ async def ws_live(websocket: WebSocket, host: str = Query(default=None)):
     logger.info("WebSocket connected, ping target: %s", ping_target)
 
     prev_traffic = psutil.net_io_counters()
+    prev_ts = time.time()
     alert_cooldown = {}
 
     try:
         while True:
+            now_ts = time.time()
+            interval = now_ts - prev_ts
+
             system_data = {
                 "cpu_percent": psutil.cpu_percent(interval=0.1),
                 "ram_percent": psutil.virtual_memory().percent,
@@ -31,17 +35,16 @@ async def ws_live(websocket: WebSocket, host: str = Query(default=None)):
             }
 
             curr_traffic = psutil.net_io_counters()
+            sent_diff = curr_traffic.bytes_sent - prev_traffic.bytes_sent
+            recv_diff = curr_traffic.bytes_recv - prev_traffic.bytes_recv
             traffic_data = {
-                "upload_mbps": round(
-                    (curr_traffic.bytes_sent - prev_traffic.bytes_sent) / 1024 / 1024, 2
-                ),
-                "download_mbps": round(
-                    (curr_traffic.bytes_recv - prev_traffic.bytes_recv) / 1024 / 1024, 2
-                ),
+                "upload_mbps": round((sent_diff * 8) / 1_000_000 / interval, 2) if interval > 0 else 0,
+                "download_mbps": round((recv_diff * 8) / 1_000_000 / interval, 2) if interval > 0 else 0,
                 "packets_sent": curr_traffic.packets_sent,
                 "packets_recv": curr_traffic.packets_recv,
             }
             prev_traffic = curr_traffic
+            prev_ts = now_ts
 
             ping_data = ping_host(ping_target)
 
@@ -55,7 +58,7 @@ async def ws_live(websocket: WebSocket, host: str = Query(default=None)):
                         status=ping_data["status"],
                     )
             except Exception:
-                pass
+                logger.exception("Failed to save ping record to DB")
 
             now = time.time()
             alerts = check_alerts(system_data, ping_data)

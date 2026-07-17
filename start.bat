@@ -6,6 +6,12 @@ echo    NetPulse - Network Monitoring Dashboard
 echo ========================================
 echo.
 
+:: Kill any leftover process on port 8000
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":8000 " ^| findstr LISTENING') do (
+    taskkill /F /PID %%a >nul 2>&1
+)
+timeout /t 1 /nobreak >nul
+
 :: Start Backend
 echo [1/2] Starting Backend (port 8000)...
 start "NetPulse Backend" cmd /k "cd /d "%~dp0backend" && .\venv\Scripts\python.exe -m uvicorn app.main:app --reload --port 8000"
