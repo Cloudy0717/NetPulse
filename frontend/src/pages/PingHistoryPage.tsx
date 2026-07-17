@@ -3,12 +3,12 @@ import { PingRecord } from '@/types'
 import { fetchPingHistory } from '@/services/api'
 import PingHistoryChart from '@/components/charts/PingHistoryChart'
 import { Download } from 'lucide-react'
+import { API_URL } from '@/services/api'
 
 export default function PingHistoryPage() {
   const [records, setRecords] = useState<PingRecord[]>([])
   const [loading, setLoading] = useState(true)
   const [host, setHost] = useState('google.com')
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
   useEffect(() => {
     const load = async () => {

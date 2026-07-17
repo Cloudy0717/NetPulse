@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Globe, Loader2 } from 'lucide-react'
+import { API_URL } from '@/services/api'
 
 interface Hop {
   hop: number
@@ -11,7 +12,6 @@ export default function TraceroutePage() {
   const [hops, setHops] = useState<Hop[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
   const runTrace = async () => {
     setLoading(true)

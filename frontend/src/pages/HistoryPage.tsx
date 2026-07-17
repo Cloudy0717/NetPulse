@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react'
 import { SpeedTestRecord } from '@/types'
 import { fetchSpeedHistory } from '@/services/api'
 import { Download } from 'lucide-react'
+import { API_URL } from '@/services/api'
 
 export default function HistoryPage() {
   const [records, setRecords] = useState<SpeedTestRecord[]>([])
   const [loading, setLoading] = useState(true)
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
   useEffect(() => {
     const load = async () => {

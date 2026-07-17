@@ -31,10 +31,3 @@ class PingRecordResponse(PingRecordCreate):
     class Config:
         from_attributes = True
 
-
-class HistoryQuery(BaseModel):
-    host: Optional[str] = None
-    start: Optional[datetime] = None
-    end: Optional[datetime] = None
-    limit: int = 50
-    offset: int = 0

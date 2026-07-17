@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { API_URL } from '@/services/api'
 
 interface OpenPort {
   port: number
@@ -25,7 +26,6 @@ export default function PortScannerPage() {
     setLoading(true)
     setError('')
     try {
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
       const res = await fetch(`${API_URL}/api/portscan`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

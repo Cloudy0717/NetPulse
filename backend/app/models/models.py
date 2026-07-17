@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Float, String, DateTime, func
+from sqlalchemy import Column, Integer, Float, String, DateTime, func, Index
 from .database import Base
 
 
@@ -21,6 +21,10 @@ class PingRecord(Base):
     latency_ms = Column(Float, nullable=True)
     status = Column(String(20), nullable=False)
     created_at = Column(DateTime, server_default=func.now(), index=True)
+
+    __table_args__ = (
+        Index("ix_ping_host_created", "host", "created_at"),
+    )
 
 
 class SystemMetric(Base):

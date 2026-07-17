@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Wifi, Globe, Fingerprint, Router, MapPin, Network, Monitor, Power } from 'lucide-react'
+import { API_URL } from '@/services/api'
 
 interface NetworkData {
   ipv4: string
@@ -15,7 +16,6 @@ interface NetworkData {
 export default function NetworkPage() {
   const [data, setData] = useState<NetworkData | null>(null)
   const [loading, setLoading] = useState(true)
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
   useEffect(() => {
     const fetchData = async () => {

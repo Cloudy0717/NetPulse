@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowUp, ArrowDown, Clock, Server } from 'lucide-react'
+import { API_URL } from '@/services/api'
 import WaveScan from '@/components/charts/WaveScan'
 
 interface SpeedTestResult {
@@ -17,7 +18,6 @@ export default function SpeedtestPage() {
   const [result, setResult] = useState<SpeedTestResult | null>(null)
   const [error, setError] = useState('')
   const navigate = useNavigate()
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
   const pollRef = useRef<ReturnType<typeof setInterval>>()
 
   const runTest = useCallback(async () => {
