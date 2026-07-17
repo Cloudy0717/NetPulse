@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react'
 import { PingRecord } from '@/types'
 import { fetchPingHistory } from '@/services/api'
 import PingHistoryChart from '@/components/charts/PingHistoryChart'
+import { Download } from 'lucide-react'
 
 export default function PingHistoryPage() {
   const [records, setRecords] = useState<PingRecord[]>([])
   const [loading, setLoading] = useState(true)
   const [host, setHost] = useState('google.com')
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
   useEffect(() => {
     const load = async () => {
@@ -24,19 +26,34 @@ export default function PingHistoryPage() {
     return () => clearInterval(interval)
   }, [host])
 
+  const exportCSV = () => {
+    window.open(`${API_URL}/api/history/ping/export?host=${host}`, '_blank')
+  }
+
   return (
-    <div className="p-4 space-y-6">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">Ping History</h2>
-        <select
-          value={host}
-          onChange={(e) => setHost(e.target.value)}
-          className="bg-slate-800 text-white rounded-lg px-4 py-2 border border-slate-700"
-        >
-          <option value="google.com">Google (8.8.8.8)</option>
-          <option value="cloudflare.com">Cloudflare (1.1.1.1)</option>
-          <option value="1.1.1.1">1.1.1.1</option>
-        </select>
+        <div className="flex items-center gap-3">
+          <select
+            value={host}
+            onChange={(e) => setHost(e.target.value)}
+            className="bg-slate-800 text-white rounded-lg px-4 py-2 border border-slate-700"
+          >
+            <option value="google.com">Google (8.8.8.8)</option>
+            <option value="cloudflare.com">Cloudflare (1.1.1.1)</option>
+            <option value="1.1.1.1">1.1.1.1</option>
+          </select>
+          {records.length > 0 && (
+            <button
+              onClick={exportCSV}
+              className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors text-sm"
+            >
+              <Download className="w-4 h-4" />
+              Export CSV
+            </button>
+          )}
+        </div>
       </div>
 
       <PingHistoryChart data={records} />

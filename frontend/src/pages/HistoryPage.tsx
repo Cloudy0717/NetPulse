@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
 import { SpeedTestRecord } from '@/types'
 import { fetchSpeedHistory } from '@/services/api'
+import { Download } from 'lucide-react'
 
 export default function HistoryPage() {
   const [records, setRecords] = useState<SpeedTestRecord[]>([])
   const [loading, setLoading] = useState(true)
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
   useEffect(() => {
     const load = async () => {
@@ -20,9 +22,24 @@ export default function HistoryPage() {
     load()
   }, [])
 
+  const exportCSV = () => {
+    window.open(`${API_URL}/api/history/speed/export`, '_blank')
+  }
+
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-6">Speed Test History</h2>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold">Speed Test History</h2>
+        {records.length > 0 && (
+          <button
+            onClick={exportCSV}
+            className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors text-sm"
+          >
+            <Download className="w-4 h-4" />
+            Export CSV
+          </button>
+        )}
+      </div>
       <div className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
         <table className="w-full text-sm">
           <thead>
