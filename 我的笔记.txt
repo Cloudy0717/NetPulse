@@ -1,0 +1,3 @@
+我的项目分成前端和后端。后端使用 FastAPI，通过 psutil、ping3 等 Python 套件实时读取电脑和网络状态，再利用 WebSocket 持续把实时数据推送到 React 前端，让 Dashboard 即时更新。至于测速、设置修改等用户主动操作，则通过 REST API 与后端通信，而设置和历史数据会储存在 SQLite 中
+
+My project is divided into front-end and back-end. The back-end uses FastAPI, which uses Python packages such as psutil and ping3 to read the computer and network status in real time, and then uses WebSocket to continuously push the real-time data to the React front-end so that the dashboard updates instantly. As for user-initiated operations such as speed testing and setting changes, they communicate with the back-end through a REST API, and the settings and historical data are stored in SQLite.
