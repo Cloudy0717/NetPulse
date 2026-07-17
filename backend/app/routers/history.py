@@ -1,4 +1,7 @@
+import csv
+import io
 from fastapi import APIRouter, Query, Depends
+from fastapi.responses import StreamingResponse
 from datetime import datetime
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.database import get_db
@@ -51,3 +54,36 @@ async def ping_history(
             for r in records
         ],
     }
+
+@router.get("/speed/export")
+async def speed_export_csv(db: AsyncSession = Depends(get_db)):
+    records = await get_speedtest_history(db, limit=1000)
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(["id", "download_mbps", "upload_mbps", "latency_ms", "server", "created_at"])
+    for r in records:
+        writer.writerow([r.id, r.download_mbps, r.upload_mbps, r.latency_ms, r.server, r.created_at.isoformat()])
+    output.seek(0)
+    return StreamingResponse(
+        iter([output.getvalue()]),
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=speed_history.csv"},
+    )
+
+@router.get("/ping/export")
+async def ping_export_csv(
+    host: str = Query(default=None),
+    db: AsyncSession = Depends(get_db),
+):
+    records = await get_ping_history(db, host=host, limit=5000)
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(["id", "host", "latency_ms", "status", "created_at"])
+    for r in records:
+        writer.writerow([r.id, r.host, r.latency_ms, r.status, r.created_at.isoformat()])
+    output.seek(0)
+    return StreamingResponse(
+        iter([output.getvalue()]),
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=ping_history.csv"},
+    )
