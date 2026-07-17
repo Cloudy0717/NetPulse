@@ -40,3 +40,20 @@ export interface Settings {
   ping_target: string;
   notifications_enabled: boolean;
 }
+
+export interface SpeedTestRecord {
+  id: number
+  download_mbps: number
+  upload_mbps: number
+  latency_ms: number | null
+  server: string | null
+  created_at: string
+}
+
+export interface PingRecord {
+  id: number
+  host: string
+  latency_ms: number | null
+  status: string
+  created_at: string
+}

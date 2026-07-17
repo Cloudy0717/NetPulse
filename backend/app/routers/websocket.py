@@ -5,6 +5,8 @@ import time
 import logging
 from ..services.ping_service import ping_host
 from ..services.notification_service import check_alerts
+from ..services.db_service import save_ping_record
+from ..models.database import async_session
 from ..config import settings
 
 logger = logging.getLogger(__name__)
@@ -42,6 +44,18 @@ async def ws_live(websocket: WebSocket, host: str = Query(default=None)):
             prev_traffic = curr_traffic
 
             ping_data = ping_host(ping_target)
+
+            # Save ping to DB (fire-and-forget, non-blocking)
+            try:
+                async with async_session() as db_session:
+                    await save_ping_record(
+                        db_session,
+                        host=ping_data["host"],
+                        latency_ms=ping_data.get("latency_ms"),
+                        status=ping_data["status"],
+                    )
+            except Exception:
+                pass
 
             now = time.time()
             alerts = check_alerts(system_data, ping_data)
