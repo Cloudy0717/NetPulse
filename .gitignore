@@ -25,6 +25,8 @@ Thumbs.db
 
 # Data
 data/settings.json
+data/*.db
+data/*.db-journal
 *.log
 
 # Test
